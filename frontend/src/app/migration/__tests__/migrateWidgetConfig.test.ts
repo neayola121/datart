@@ -199,34 +199,217 @@ describe('Widget Config Migration Tests', () => {
         comType: 'group',
         rows: [
           {
-            label: 'tab.alignTitle',
-            key: 'align',
-            default: 'start',
-            value: 'start',
             comType: 'select',
+            default: 'tab',
+            key: 'style',
+            label: 'tab.style',
             options: {
-              translateItemLabel: true,
               items: [
+                { label: 'tab.tab', value: 'tab' },
+                { label: 'tab.dropdown', value: 'dropdown' },
+              ],
+              translateItemLabel: true,
+            },
+            value: 'tab',
+          },
+          {
+            comType: 'select',
+            default: 'start',
+            key: 'align',
+            label: 'tab.alignTitle',
+            options: {
+              items: [
+                // 修正点1：更新 label 为 viz.common.enum.alignment.*
                 { label: 'viz.common.enum.alignment.start', value: 'start' },
                 { label: 'viz.common.enum.alignment.center', value: 'center' },
                 { label: 'viz.common.enum.alignment.end', value: 'end' },
               ],
-            },
-          },
-          {
-            label: 'tab.position',
-            key: 'position',
-            default: 'top',
-            value: 'top',
-            comType: 'select',
-            options: {
               translateItemLabel: true,
+            },
+            value: 'start', // 修正点2：align 的 value 应该是 start
+          },
+          // 修正点3：新增 position 配置对象
+          {
+            comType: 'select',
+            default: 'top',
+            key: 'position',
+            label: 'tab.position',
+            options: {
               items: [
                 { label: 'viz.common.enum.position.top', value: 'top' },
                 { label: 'viz.common.enum.position.bottom', value: 'bottom' },
                 { label: 'viz.common.enum.position.left', value: 'left' },
                 { label: 'viz.common.enum.position.right', value: 'right' },
               ],
+              translateItemLabel: true,
+            },
+            value: 'top',
+          },
+          {
+            comType: 'fontFamily',
+            default: 'PingFang SC',
+            key: 'fontFamily',
+            label: 'tab.fontFamily',
+            value: 'PingFang SC',
+          },
+          {
+            comType: 'inputNumber',
+            default: 14,
+            key: 'fontSize',
+            label: 'tab.fontSize',
+            value: 14,
+          },
+          {
+            comType: 'fontColor',
+            default: '#495057',
+            key: 'color',
+            label: 'tab.color',
+            value: '#495057',
+          },
+          {
+            comType: 'fontColor',
+            default: '#ffffff',
+            key: 'background',
+            label: 'tab.background',
+            value: '#ffffff',
+          },
+          {
+            comType: 'group',
+            key: 'dimensions',
+            label: 'Dimensions',
+            options: {
+              container: 'flat',
+              flatten: true,
+              layout: 'horizontal',
+            },
+            rows: [
+              {
+                comType: 'inputNumber',
+                default: 200,
+                key: 'width',
+                label: 'tab.width',
+                value: 200,
+              },
+              {
+                comType: 'inputNumber',
+                default: 32,
+                key: 'height',
+                label: 'tab.height',
+                value: 32,
+              },
+            ],
+            watcher: {
+              action: expect.any(Function),
+              deps: ['style'],
+            },
+          },
+          {
+            comType: 'group',
+            key: 'margins',
+            label: 'Margins',
+            options: {
+              container: 'flat',
+              flatten: true,
+            },
+            rows: [
+              {
+                comType: 'group',
+                key: 'marginRow1',
+                label: 'Row1',
+                options: {
+                  flatten: true,
+                  layout: 'horizontal',
+                  mode: 'inner',
+                },
+                rows: [
+                  {
+                    comType: 'inputNumber',
+                    default: 0,
+                    key: 'paddingTop',
+                    label: 'tab.paddingTop',
+                    value: 0,
+                  },
+                  {
+                    comType: 'inputNumber',
+                    default: 8,
+                    key: 'paddingBottom',
+                    label: 'tab.paddingBottom',
+                    value: 8,
+                  },
+                ],
+              },
+              {
+                comType: 'group',
+                key: 'marginRow2',
+                label: 'Row2',
+                options: {
+                  flatten: true,
+                  layout: 'horizontal',
+                  mode: 'inner',
+                },
+                rows: [
+                  {
+                    comType: 'inputNumber',
+                    default: 0,
+                    key: 'paddingLeft',
+                    label: 'tab.paddingLeft',
+                    value: 0,
+                  },
+                  {
+                    comType: 'inputNumber',
+                    default: 0,
+                    key: 'paddingRight',
+                    label: 'tab.paddingRight',
+                    value: 0,
+                  },
+                ],
+              },
+            ],
+            watcher: {
+              action: expect.any(Function),
+              deps: ['style'],
+            },
+          },
+          {
+            comType: 'fontColor',
+            default: '#d9d9d9',
+            key: 'borderColor',
+            label: 'tab.borderColor',
+            value: '#d9d9d9',
+            watcher: {
+              action: expect.any(Function),
+              deps: ['style'],
+            },
+          },
+          {
+            comType: 'select',
+            default: 'solid',
+            key: 'borderStyle',
+            label: 'tab.borderStyle',
+            options: {
+              items: [
+                { label: '实线', value: 'solid' },
+                { label: '虚线', value: 'dashed' },
+                { label: '点线', value: 'dotted' },
+                { label: '双实线', value: 'double' },
+                { label: '无', value: 'none' },
+              ],
+            },
+            value: 'solid',
+            watcher: {
+              action: expect.any(Function),
+              deps: ['style'],
+            },
+          },
+          {
+            comType: 'inputNumber',
+            default: 1,
+            key: 'borderWidth',
+            label: 'tab.borderWidth',
+            value: 1,
+            watcher: {
+              action: expect.any(Function),
+              deps: ['style'],
             },
           },
         ],

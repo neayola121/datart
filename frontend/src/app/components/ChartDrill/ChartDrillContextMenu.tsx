@@ -273,6 +273,7 @@ export default ChartDrillContextMenu;
 const StyledChartDrill = styled.div`
   position: relative;
   width: 100%;
+  height: 100%;
 `;
 
 const StyledChartDrillMenu = styled(Menu)`

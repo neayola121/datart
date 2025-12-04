@@ -73,7 +73,7 @@ import {
 import { FormGeneratorLayoutProps } from '../types';
 import { groupLayoutComparer, invokeDependencyWatcher } from '../utils';
 
-const PERMIT_COMPONENT_PROPS = ['disabled'];
+const PERMIT_COMPONENT_PROPS = ['disabled', 'hide'];
 
 const ItemLayout: FC<FormGeneratorLayoutProps<ChartStyleConfig>> = memo(
   ({
@@ -222,7 +222,10 @@ const ItemLayout: FC<FormGeneratorLayoutProps<ChartStyleConfig>> = memo(
     };
 
     return (
-      <StyledItemLayout className="chart-config-item-layout">
+      <StyledItemLayout
+        className="chart-config-item-layout"
+        hidden={data.hide}
+      >
         {renderBasicComponent()}
       </StyledItemLayout>
     );
@@ -232,7 +235,8 @@ const ItemLayout: FC<FormGeneratorLayoutProps<ChartStyleConfig>> = memo(
 
 export default ItemLayout;
 
-const StyledItemLayout = styled.div`
+const StyledItemLayout = styled.div<{ hidden?: boolean }>`
+  display: ${p => (p.hidden ? 'none' : 'block')};
   padding: ${SPACE} 0;
   user-select: none;
 `;

@@ -68,10 +68,24 @@ const GroupLayout: FC<FormGeneratorLayoutProps<ChartStyleConfig>> = memo(
     };
 
     const renderGroupByMode = (mode, comType, data) => {
-      if (mode === FormGroupLayoutMode.INNER) {
+      if (
+        mode === FormGroupLayoutMode.INNER ||
+        data?.options?.mode === 'inner'
+      ) {
         return renderCollectionComponents(
           data,
           handleConfirmModalDialogOrDataUpdate,
+        );
+      }
+
+      if (data?.options?.container === 'flat') {
+        return (
+          <BW label={t(data.label, true)}>
+            {renderCollectionComponents(
+              data,
+              handleConfirmModalDialogOrDataUpdate,
+            )}
+          </BW>
         );
       }
       if (comType === FormItemComponentType.MODAL) {

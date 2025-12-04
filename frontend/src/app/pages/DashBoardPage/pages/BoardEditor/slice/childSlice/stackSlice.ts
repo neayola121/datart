@@ -248,6 +248,21 @@ export const editBoardStackSlice = createSlice({
     ) {
       const { wid, config } = action.payload;
       state.widgetRecord[wid].config = config;
+
+      // Sync name to parent TabWidget if exists
+      const parentId = state.widgetRecord[wid].parentId;
+      if (parentId && state.widgetRecord[parentId]) {
+        const parentWidget = state.widgetRecord[parentId];
+        if (parentWidget.config.originalType === ORIGINAL_TYPE_MAP.tab) {
+          const tabContent = parentWidget.config.content as TabWidgetContent;
+          const tabItem = Object.values(tabContent.itemMap).find(
+            item => item.childWidgetId === wid,
+          );
+          if (tabItem) {
+            tabContent.itemMap[tabItem.tabId].name = config.name;
+          }
+        }
+      }
     },
     updateWidgetConfigByKey(
       state,
@@ -256,6 +271,22 @@ export const editBoardStackSlice = createSlice({
       const { wid, key, val } = action.payload;
       if (!state.widgetRecord?.[wid]?.config) return;
       state.widgetRecord[wid].config[key] = val;
+
+      if (key === 'name') {
+        const parentId = state.widgetRecord[wid].parentId;
+        if (parentId && state.widgetRecord[parentId]) {
+          const parentWidget = state.widgetRecord[parentId];
+          if (parentWidget.config.originalType === ORIGINAL_TYPE_MAP.tab) {
+            const tabContent = parentWidget.config.content as TabWidgetContent;
+            const tabItem = Object.values(tabContent.itemMap).find(
+              item => item.childWidgetId === wid,
+            );
+            if (tabItem) {
+              tabContent.itemMap[tabItem.tabId].name = val;
+            }
+          }
+        }
+      }
     },
     updateWidgetsConfig(state, action: PayloadAction<updateWidgetConf[]>) {
       const nextWidgetConfigs = action.payload;
@@ -513,5 +544,5 @@ export const editBoardStackSlice = createSlice({
       }
     },
   },
-  extraReducers: builder => {},
+  extraReducers: builder => { },
 });

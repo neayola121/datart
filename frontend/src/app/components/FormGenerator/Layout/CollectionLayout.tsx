@@ -34,10 +34,12 @@ const CollectionLayout: FC<FormGeneratorLayoutProps<ChartStyleConfig>> = memo(
     }, []);
 
     return (
-      <StyledCollectionLayout className="chart-config-collection-layout">
+      <StyledCollectionLayout
+        className="chart-config-collection-layout"
+        layout={data?.options?.layout}
+      >
         {data?.rows
-          ?.filter(r => Boolean(!r.hide))
-          .map((r, index) => (
+          ?.map((r, index) => (
             <ItemLayout
               ancestors={ancestors.concat([index])}
               key={r.key}
@@ -58,4 +60,18 @@ const CollectionLayout: FC<FormGeneratorLayoutProps<ChartStyleConfig>> = memo(
 
 export default CollectionLayout;
 
-const StyledCollectionLayout = styled.div``;
+const StyledCollectionLayout = styled.div<{ layout?: string }>`
+  ${p =>
+    p.layout === 'horizontal' &&
+    `
+    display: flex;
+    align-items: center;
+    > div {
+      flex: 1;
+      padding-right: 8px;
+      &:last-child {
+        padding-right: 0;
+      }
+    }
+  `}
+`;

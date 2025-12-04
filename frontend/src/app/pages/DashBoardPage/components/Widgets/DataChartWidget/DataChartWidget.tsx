@@ -32,35 +32,43 @@ import { WidgetInfoContext } from '../../WidgetProvider/WidgetInfoProvider';
 import { ToolBar } from './components/ToolBar';
 import { DataChartWidgetCore } from './DataChartWidgetCore';
 
-export const DataChartWidget: React.FC<{ hideTitle: boolean }> = memo(
-  ({ hideTitle }) => {
-    const widget = useContext(WidgetContext);
-    const { rendered } = useContext(WidgetInfoContext);
-    const { renderMode, boardType } = useContext(BoardContext);
-    const { cacheWhRef } = useRenderWidget(
-      widget,
-      renderMode,
-      boardType,
-      rendered,
-    );
-    useWidgetAutoFetch(widget, renderMode, cacheWhRef, rendered);
-    const title = getWidgetTitle(widget.config.customConfig.props);
-    title.title = widget.config.name;
-    const { background, border, padding } = getWidgetBaseStyle(
-      widget.config.customConfig.props,
-    );
-    return (
-      <WidgetWrapper background={background} border={border} padding={padding}>
-        <div ref={cacheWhRef} style={ZIndexStyle}>
-          {!hideTitle && <WidgetTitle title={title} />}
+export const DataChartWidget: React.FC<{
+  hideTitle: boolean;
+  hidePadding?: boolean;
+}> = memo(({ hideTitle, hidePadding }) => {
+  const widget = useContext(WidgetContext);
+  const { rendered } = useContext(WidgetInfoContext);
+  const { renderMode, boardType } = useContext(BoardContext);
+  const { cacheWhRef } = useRenderWidget(
+    widget,
+    renderMode,
+    boardType,
+    rendered,
+  );
+  useWidgetAutoFetch(widget, renderMode, cacheWhRef, rendered);
+  const title = getWidgetTitle(widget.config.customConfig.props);
+  title.title = widget.config.name;
+  const { background, border, padding } = getWidgetBaseStyle(
+    widget.config.customConfig.props,
+  );
+  return (
+    <WidgetWrapper
+      background={background}
+      border={border}
+      padding={
+        hidePadding ? { left: 0, right: 0, top: 0, bottom: 0 } : padding
+      }
+    >
+      <div ref={cacheWhRef} style={ZIndexStyle}>
+        {!hideTitle && <WidgetTitle title={title} />}
 
-          <div style={FlexStyle}>
-            <DataChartWidgetCore />
-          </div>
+        <div style={FlexStyle}>
+          <DataChartWidgetCore />
         </div>
-        {renderMode === 'edit' && <EditMask />}
-        <ToolBar />
-      </WidgetWrapper>
-    );
-  },
+      </div>
+      {renderMode === 'edit' && <EditMask />}
+      <ToolBar />
+    </WidgetWrapper>
+  );
+},
 );

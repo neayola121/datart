@@ -34,7 +34,8 @@ import { VideoWidget } from '../Widgets/VideoWidget/VideoWidget';
 export const WidgetMapper: React.FC<{
   boardEditing: boolean;
   hideTitle: boolean;
-}> = memo(({ boardEditing, hideTitle }) => {
+  hidePadding?: boolean;
+}> = memo(({ boardEditing, hideTitle, hidePadding }) => {
   const widget = useContext(WidgetContext);
   const originalType = widget.config.originalType;
   switch (originalType) {
@@ -49,7 +50,7 @@ export const WidgetMapper: React.FC<{
           boardId={widget.dashboardId}
           boardEditing={boardEditing}
         >
-          <DataChartWidget hideTitle={hideTitle} />
+          <DataChartWidget hideTitle={hideTitle} hidePadding={hidePadding} />
         </WidgetDataProvider>
       );
     // media
@@ -60,7 +61,7 @@ export const WidgetMapper: React.FC<{
     case ORIGINAL_TYPE_MAP.video:
       return <VideoWidget hideTitle={hideTitle} />;
     case ORIGINAL_TYPE_MAP.iframe:
-      return <IframeWidget hideTitle={hideTitle} />;
+      return <IframeWidget hideTitle={hideTitle} hidePadding={hidePadding} />;
     case ORIGINAL_TYPE_MAP.timer:
       return <TimerWidget hideTitle={hideTitle} />;
 

@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Tabs } from 'antd';
+import { Select, Tabs } from 'antd';
 import { TabWidgetContent } from 'app/pages/DashBoardPage/pages/Board/slice/types';
 import { memo, useCallback, useContext, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -37,9 +37,9 @@ const { TabPane } = Tabs;
 export const TabWidgetCore: React.FC<{}> = memo(() => {
   const dispatch = useDispatch();
   const widget = useContext(WidgetContext);
-  const { align, position } = (tabProto.toolkit as TabToolkit).getCustomConfig(
-    widget.config.customConfig.props,
-  );
+  const { align, position, style, fontFamily, fontSize, color, background, width, height, paddingTop, paddingBottom, paddingLeft, paddingRight, borderColor, borderStyle, borderWidth } = (
+    tabProto.toolkit as TabToolkit
+  ).getCustomConfig(widget.config.customConfig.props);
   const { editing } = useContext(WidgetInfoContext);
   const { onEditSelectWidget } = useContext(WidgetActionContext);
   const {
@@ -115,44 +115,125 @@ export const TabWidgetCore: React.FC<{}> = memo(() => {
   );
 
   return (
-    <TabsBoxWrap className="TabsBoxWrap" tabsAlign={align}>
-      <Tabs
-        onTabClick={editing ? onTabClick : undefined}
-        size="small"
-        tabBarGutter={1}
-        tabPosition={position as any}
-        activeKey={editing ? String(activeKey) : undefined}
-        tabBarStyle={{ fontSize: '16px' }}
-        type={editing ? 'editable-card' : undefined}
-        onEdit={editing ? tabEdit : undefined}
-        destroyInactiveTabPane
-      >
-        {tabsCons.map(tab => (
-          <TabPane
-            tab={tab.name || 'tab'}
-            key={tab.index}
-            className="TabPane"
-            forceRender
+    <TabsBoxWrap
+      className="TabsBoxWrap"
+      tabsAlign={align}
+      dropdownBackground={background}
+      dropdownColor={color}
+      dropdownFontFamily={fontFamily}
+      dropdownFontSize={fontSize}
+      dropdownMarginTop={paddingTop}
+      dropdownMarginBottom={paddingBottom}
+      dropdownMarginLeft={paddingLeft}
+      dropdownMarginRight={paddingRight}
+      dropdownBorderColor={borderColor}
+      dropdownBorderStyle={borderStyle}
+      dropdownBorderWidth={borderWidth}
+      dropdownHeight={height}
+      tabFontFamily={fontFamily}
+      tabFontSize={fontSize}
+      tabColor={color}
+      tabBackground={background}
+    >
+      {style === 'dropdown' ? (
+        <div className="dropdown-container">
+          <Select
+            value={String(activeKey)}
+            onChange={val => SetActiveKey(val)}
+            className="tab-dropdown"
+            style={{
+              width: width || 200,
+              height: height || 32,
+              fontFamily,
+              fontSize,
+              color,
+            }}
+            dropdownStyle={{
+              fontFamily,
+              fontSize,
+              zIndex: 10000,
+            }}
+            getPopupContainer={triggerNode => document.body}
           >
-            {tab.childWidgetId ? (
-              <WidgetWrapProvider
-                id={tab.childWidgetId}
-                boardEditing={boardEditing}
-                boardId={boardId}
-              >
-                <MapWrapper>
-                  <WidgetMapper boardEditing={boardEditing} hideTitle={true} />
-                </MapWrapper>
-              </WidgetWrapProvider>
-            ) : (
-              boardEditing && (
-                <DropHolder tabItem={tab} tabWidgetId={widget.id} />
-              )
-            )}
-          </TabPane>
-        ))}
-      </Tabs>
-    </TabsBoxWrap>
+            {tabsCons.map(tab => (
+              <Select.Option key={tab.index} value={String(tab.index)}>
+                {tab.name || 'tab'}
+              </Select.Option>
+            ))}
+          </Select>
+          <div className="dropdown-content">
+            {tabsCons.map(tab => {
+              if (String(tab.index) !== String(activeKey)) return null;
+              return (
+                <div key={tab.index} className="TabPane">
+                  {tab.childWidgetId ? (
+                    <WidgetWrapProvider
+                      id={tab.childWidgetId}
+                      boardEditing={boardEditing}
+                      boardId={boardId}
+                    >
+                      <MapWrapper>
+                        <WidgetMapper
+                          boardEditing={boardEditing}
+                          hideTitle={true}
+                          hidePadding={true}
+                        />
+                      </MapWrapper>
+                    </WidgetWrapProvider>
+                  ) : (
+                    boardEditing && (
+                      <DropHolder tabItem={tab} tabWidgetId={widget.id} />
+                    )
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ) : (
+        <Tabs
+          onTabClick={editing ? onTabClick : undefined}
+          size="small"
+          tabBarGutter={1}
+          tabPosition={position as any}
+          activeKey={editing ? String(activeKey) : undefined}
+          tabBarStyle={{ fontSize: '16px' }}
+          type={editing ? 'editable-card' : undefined}
+          onEdit={editing ? tabEdit : undefined}
+          destroyInactiveTabPane
+        >
+          {tabsCons.map(tab => (
+            <TabPane
+              tab={tab.name || 'tab'}
+              key={tab.index}
+              className="TabPane"
+              forceRender
+            >
+              {tab.childWidgetId ? (
+                <WidgetWrapProvider
+                  id={tab.childWidgetId}
+                  boardEditing={boardEditing}
+                  boardId={boardId}
+                >
+                  <MapWrapper>
+                    <WidgetMapper
+                      boardEditing={boardEditing}
+                      hideTitle={true}
+                      hidePadding={true}
+                    />
+                  </MapWrapper>
+                </WidgetWrapProvider>
+              ) : (
+                boardEditing && (
+                  <DropHolder tabItem={tab} tabWidgetId={widget.id} />
+                )
+              )}
+            </TabPane>
+          ))}
+        </Tabs>
+      )
+      }
+    </TabsBoxWrap >
   );
 });
 const MapWrapper = styled.div`
@@ -162,10 +243,31 @@ const MapWrapper = styled.div`
   flex: 1;
   width: 100%;
   height: 100%;
+  overflow: hidden;
+  background: transparent !important;
 `;
-const TabsBoxWrap = styled.div<{ tabsAlign: string }>`
+const TabsBoxWrap = styled.div<{
+  tabsAlign: string;
+  dropdownBackground?: string;
+  dropdownColor?: string;
+  dropdownFontFamily?: string;
+  dropdownFontSize?: number;
+  dropdownMarginTop?: number;
+  dropdownMarginBottom?: number;
+  dropdownMarginLeft?: number;
+  dropdownMarginRight?: number;
+  dropdownBorderColor?: string;
+  dropdownBorderStyle?: string;
+  dropdownBorderWidth?: number;
+  dropdownHeight?: number;
+  tabFontFamily?: string;
+  tabFontSize?: number;
+  tabColor?: string;
+  tabBackground?: string;
+}>`
   width: 100%;
   height: 100%;
+  background: transparent !important;
 
   & .ant-tabs {
     width: 100%;
@@ -185,6 +287,10 @@ const TabsBoxWrap = styled.div<{ tabsAlign: string }>`
   .ant-tabs-tab {
     padding: 0 !important;
     margin-right: 30px;
+    font-family: ${p => p.tabFontFamily || 'inherit'} !important;
+    font-size: ${p => p.tabFontSize ? p.tabFontSize + 'px' : 'inherit'} !important;
+    color: ${p => p.tabColor || 'inherit'} !important;
+    background-color: ${p => p.tabBackground || 'transparent'} !important;
   }
   & .ant-tabs.ant-tabs-card.ant-tabs-card > .ant-tabs-nav .ant-tabs-tab {
     margin: 0 10px;
@@ -192,6 +298,7 @@ const TabsBoxWrap = styled.div<{ tabsAlign: string }>`
   & .TabPane {
     width: 100%;
     height: 100%;
+    background: transparent !important;
   }
   & .ant-tabs-tab-remove {
     background-color: ${PRIMARY};
@@ -210,6 +317,51 @@ const TabsBoxWrap = styled.div<{ tabsAlign: string }>`
 
     & > .ant-tabs-nav-list {
       flex: none;
+    }
+  }
+
+  .dropdown-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    background: transparent !important;
+
+    .tab-dropdown {
+      align-self: ${p =>
+    p.tabsAlign === 'center'
+      ? 'center'
+      : p.tabsAlign === 'end'
+        ? 'flex-end'
+        : 'flex-start'};
+      margin-top: ${p => (p.dropdownMarginTop !== undefined ? p.dropdownMarginTop : 0)}px;
+      margin-right: ${p => (p.dropdownMarginRight !== undefined ? p.dropdownMarginRight : 0)}px;
+      margin-bottom: ${p => (p.dropdownMarginBottom !== undefined ? p.dropdownMarginBottom : 8)}px;
+      margin-left: ${p => (p.dropdownMarginLeft !== undefined ? p.dropdownMarginLeft : 0)}px;
+      
+      .ant-select-selector {
+        display: flex;
+        align-items: center;
+        height: ${p => p.dropdownHeight ? p.dropdownHeight + 'px' : '32px'} !important;
+        font-family: ${p => p.dropdownFontFamily || 'inherit'} !important;
+        font-size: ${p => p.dropdownFontSize ? p.dropdownFontSize + 'px' : 'inherit'} !important;
+        color: ${p => p.dropdownColor || 'inherit'} !important;
+        background-color: ${p => p.dropdownBackground || '#fff'} !important;
+        border-color: ${p => p.dropdownBorderColor || '#d9d9d9'} !important;
+        border-style: ${p => p.dropdownBorderStyle || 'solid'} !important;
+        border-width: ${p => p.dropdownBorderWidth !== undefined ? p.dropdownBorderWidth + 'px' : '1px'} !important;
+      }
+      .ant-select-arrow {
+        color: ${p => p.dropdownColor || 'inherit'} !important;
+      }
+    }
+
+    .dropdown-content {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      background: transparent !important;
     }
   }
 `;

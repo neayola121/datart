@@ -32,7 +32,7 @@ const ChartDrillPaths: FC<{ chartConfig?: ChartConfig }> = memo(
       v => v.drillContextMenuVisible,
     ).length;
     if (!drillOption || drillOption.mode === DrillMode.Normal || menuHidden) {
-      return <div></div>;
+      return null;
     }
 
     const drilledFields = drillOption.getDrilledFields();
@@ -71,7 +71,7 @@ const StyledChartDrillPaths = styled.div`
   padding: ${SPACE_XS} ${SPACE_SM};
 `;
 
-const StyledDrillNode = styled(Breadcrumb.Item)<{ isActive: boolean }>`
+const StyledDrillNode = styled(Breadcrumb.Item) <{ isActive: boolean }>`
   color: ${p => (p.isActive ? p.theme.primary : p.theme.normal)} !important;
   cursor: pointer;
   user-select: none;

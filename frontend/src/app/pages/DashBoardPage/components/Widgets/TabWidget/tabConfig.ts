@@ -49,11 +49,43 @@ const tabsI18N = {
     tabGroup: '标签页配置',
     alignTitle: '对齐方式',
     position: '标签位置',
+    style: '样式',
+    tab: '标签',
+    dropdown: '下拉框',
+    fontFamily: '字体',
+    fontSize: '字号',
+    color: '文字颜色',
+    background: '背景颜色',
+    width: '宽度',
+    height: '高度',
+    paddingTop: '上边距',
+    paddingBottom: '下边距',
+    paddingLeft: '左边距',
+    paddingRight: '右边距',
+    borderColor: '边框颜色',
+    borderStyle: '边框样式',
+    borderWidth: '边框宽度',
   },
   en: {
     tabGroup: 'Tab Config',
     alignTitle: 'Align',
     position: 'Position',
+    style: 'Style',
+    tab: 'Tab',
+    dropdown: 'Dropdown',
+    fontFamily: 'Font Family',
+    fontSize: 'Font Size',
+    color: 'Text Color',
+    background: 'Background Color',
+    width: 'Width',
+    height: 'Height',
+    paddingTop: 'Margin Top',
+    paddingBottom: 'Margin Bottom',
+    paddingLeft: 'Margin Left',
+    paddingRight: 'Margin Right',
+    borderColor: 'Border Color',
+    borderStyle: 'Border Style',
+    borderWidth: 'Border Width',
   },
 };
 
@@ -105,6 +137,20 @@ export const initTabsTpl = () => {
     comType: 'group',
     rows: [
       {
+        label: 'tab.style',
+        key: 'style',
+        default: 'tab',
+        value: 'tab',
+        comType: 'select',
+        options: {
+          translateItemLabel: true,
+          items: [
+            { label: 'tab.tab', value: 'tab' },
+            { label: 'tab.dropdown', value: 'dropdown' },
+          ],
+        },
+      },
+      {
         label: 'tab.alignTitle',
         key: 'align',
         default: 'start',
@@ -135,6 +181,170 @@ export const initTabsTpl = () => {
           ],
         },
       },
+      {
+        label: 'tab.fontFamily',
+        key: 'fontFamily',
+        default: 'PingFang SC',
+        value: 'PingFang SC',
+        comType: 'fontFamily',
+      },
+      {
+        label: 'tab.fontSize',
+        key: 'fontSize',
+        default: 14,
+        value: 14,
+        comType: 'inputNumber',
+      },
+      {
+        label: 'tab.color',
+        key: 'color',
+        default: '#495057',
+        value: '#495057',
+        comType: 'fontColor',
+      },
+      {
+        label: 'tab.background',
+        key: 'background',
+        default: '#ffffff',
+        value: '#ffffff',
+        comType: 'fontColor',
+      },
+      {
+        label: 'Dimensions',
+        key: 'dimensions',
+        comType: 'group',
+        options: { layout: 'horizontal', flatten: true, container: 'flat' },
+        watcher: {
+          deps: ['style'],
+          action: props => ({ hide: props.style !== 'dropdown' }),
+        },
+        rows: [
+          {
+            label: 'tab.width',
+            key: 'width',
+            default: 200,
+            value: 200,
+            comType: 'inputNumber',
+          },
+          {
+            label: 'tab.height',
+            key: 'height',
+            default: 32,
+            value: 32,
+            comType: 'inputNumber',
+          },
+        ],
+      },
+      {
+        label: 'Margins',
+        key: 'margins',
+        comType: 'group',
+        options: { flatten: true, container: 'flat' },
+        watcher: {
+          deps: ['style'],
+          action: props => ({ hide: props.style !== 'dropdown' }),
+        },
+        rows: [
+          {
+            label: 'Row1',
+            key: 'marginRow1',
+            comType: 'group',
+            options: { layout: 'horizontal', flatten: true, mode: 'inner' },
+            rows: [
+              {
+                label: 'tab.paddingTop',
+                key: 'paddingTop',
+                default: 0,
+                value: 0,
+                comType: 'inputNumber',
+              },
+              {
+                label: 'tab.paddingBottom',
+                key: 'paddingBottom',
+                default: 8,
+                value: 8,
+                comType: 'inputNumber',
+              },
+            ],
+          },
+          {
+            label: 'Row2',
+            key: 'marginRow2',
+            comType: 'group',
+            options: { layout: 'horizontal', flatten: true, mode: 'inner' },
+            rows: [
+              {
+                label: 'tab.paddingLeft',
+                key: 'paddingLeft',
+                default: 0,
+                value: 0,
+                comType: 'inputNumber',
+              },
+              {
+                label: 'tab.paddingRight',
+                key: 'paddingRight',
+                default: 0,
+                value: 0,
+                comType: 'inputNumber',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        label: 'tab.borderColor',
+        key: 'borderColor',
+        default: '#d9d9d9',
+        value: '#d9d9d9',
+        comType: 'fontColor',
+        watcher: {
+          deps: ['style'],
+          action: props => {
+            return {
+              hide: props.style !== 'dropdown',
+            };
+          },
+        },
+      },
+      {
+        label: 'tab.borderStyle',
+        key: 'borderStyle',
+        default: 'solid',
+        value: 'solid',
+        comType: 'select',
+        options: {
+          items: [
+            { label: '实线', value: 'solid' },
+            { label: '虚线', value: 'dashed' },
+            { label: '点线', value: 'dotted' },
+            { label: '双实线', value: 'double' },
+            { label: '无', value: 'none' },
+          ],
+        },
+        watcher: {
+          deps: ['style'],
+          action: props => {
+            return {
+              hide: props.style !== 'dropdown',
+            };
+          },
+        },
+      },
+      {
+        label: 'tab.borderWidth',
+        key: 'borderWidth',
+        default: 1,
+        value: 1,
+        comType: 'inputNumber',
+        watcher: {
+          deps: ['style'],
+          action: props => {
+            return {
+              hide: props.style !== 'dropdown',
+            };
+          },
+        },
+      },
     ],
   };
 };
@@ -143,6 +353,20 @@ export type TabToolkit = WidgetToolkit & {
   getCustomConfig: (props) => {
     align: string;
     position: string;
+    style: string;
+    fontFamily: string;
+    fontSize: number;
+    color: string;
+    background: string;
+    width: number;
+    height: number;
+    paddingTop: number;
+    paddingBottom: number;
+    paddingLeft: number;
+    paddingRight: number;
+    borderColor: string;
+    borderStyle: string;
+    borderWidth: number;
   };
 };
 export const widgetToolkit: TabToolkit = {
@@ -202,8 +426,8 @@ export const widgetToolkit: TabToolkit = {
     ];
     return list;
   },
-  edit() {},
-  save() {},
+  edit() { },
+  save() { },
   // lock() {},
   // unlock() {},
   // copy() {},
@@ -214,14 +438,49 @@ export const widgetToolkit: TabToolkit = {
   // getWidgetName() {},
   // //
   getCustomConfig(props) {
-    const [align, position] = getJsonConfigs(
+    const [align, position, style, fontFamily, fontSize, color, background, dimensions, margins, borderColor, borderStyle, borderWidth] = getJsonConfigs(
       props,
       ['tabGroup'],
-      ['align', 'position'],
+      ['align', 'position', 'style', 'fontFamily', 'fontSize', 'color', 'background', 'dimensions', 'margins', 'borderColor', 'borderStyle', 'borderWidth'],
     );
+    const [width, height] = getJsonConfigs(
+      props,
+      ['tabGroup', 'dimensions'],
+      ['width', 'height'],
+    );
+    const [marginRow1, marginRow2] = getJsonConfigs(
+      props,
+      ['tabGroup', 'margins'],
+      ['marginRow1', 'marginRow2'],
+    );
+    const [paddingTop, paddingBottom] = getJsonConfigs(
+      props,
+      ['tabGroup', 'margins', 'marginRow1'],
+      ['paddingTop', 'paddingBottom'],
+    );
+    const [paddingLeft, paddingRight] = getJsonConfigs(
+      props,
+      ['tabGroup', 'margins', 'marginRow2'],
+      ['paddingLeft', 'paddingRight'],
+    );
+
     return {
       align,
       position,
+      style,
+      fontFamily,
+      fontSize,
+      color,
+      background,
+      width,
+      height,
+      paddingTop,
+      paddingBottom,
+      paddingLeft,
+      paddingRight,
+      borderColor,
+      borderStyle,
+      borderWidth,
     };
   },
 };

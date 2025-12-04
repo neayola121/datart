@@ -32,36 +32,46 @@ import {
 } from '../../WidgetManager/utils/utils';
 import { IframeWidgetCore } from './IframeWidgetCore';
 
-export const IframeWidget: React.FC<{ hideTitle: boolean }> = memo(
-  ({ hideTitle }) => {
-    const widget = useContext(WidgetContext);
-    const { editing } = useContext(BoardContext);
-    const title = getWidgetTitle(widget.config.customConfig.props);
-    title.title = widget.config.name;
-    const { background, border, padding } = getWidgetBaseStyle(
-      widget.config.customConfig.props,
-    );
-    return (
-      <WidgetWrapper background={background} border={border} padding={padding}>
-        <div style={ZIndexStyle}>
-          {hideTitle ? null : <WidgetTitle title={title} />}
+export const IframeWidget: React.FC<{
+  hideTitle: boolean;
+  hidePadding?: boolean;
+}> = memo(({ hideTitle, hidePadding }) => {
+  const widget = useContext(WidgetContext);
+  const { editing } = useContext(BoardContext);
+  const title = getWidgetTitle(widget.config.customConfig.props);
+  title.title = widget.config.name;
+  const { background, border, padding } = getWidgetBaseStyle(
+    widget.config.customConfig.props,
+  );
+  const finalPadding = hidePadding
+    ? { top: 0, bottom: 0, left: 0, right: 0 }
+    : padding;
 
-          <div style={FlexStyle}>
-            <IframeWidgetCore />
-          </div>
+  return (
+    <WidgetWrapper
+      background={background}
+      border={border}
+      padding={finalPadding}
+    >
+      <div style={ZIndexStyle}>
+        {hideTitle ? null : <WidgetTitle title={title} />}
+
+        <div style={FlexStyle}>
+          <IframeWidgetCore />
         </div>
-        {editing && <EditMask />}
-        <StyledWidgetToolBar>
-          <Space size={0}>
-            <LockIconFn
-              boardEditing={editing}
-              wid={widget.id}
-              lock={widget.config?.lock}
-            />
-            <WidgetDropdownList widget={widget} />
-          </Space>
-        </StyledWidgetToolBar>
-      </WidgetWrapper>
-    );
-  },
+      </div>
+      {editing && <EditMask />}
+      <StyledWidgetToolBar>
+        <Space size={0}>
+          <LockIconFn
+            boardEditing={editing}
+            wid={widget.id}
+            lock={widget.config?.lock}
+          />
+          <WidgetDropdownList widget={widget} />
+        </Space>
+      </StyledWidgetToolBar>
+    </WidgetWrapper>
+  );
+},
 );
