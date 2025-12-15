@@ -276,8 +276,9 @@ describe('Widget Config Migration Tests', () => {
           {
             comType: 'group',
             key: 'dimensions',
-            label: 'Dimensions',
+            label: 'tab.dimensions',
             options: {
+
               container: 'flat',
               flatten: true,
               layout: 'horizontal',
@@ -306,8 +307,9 @@ describe('Widget Config Migration Tests', () => {
           {
             comType: 'group',
             key: 'margins',
-            label: 'Margins',
+            label: 'tab.margins',
             options: {
+
               container: 'flat',
               flatten: true,
             },
