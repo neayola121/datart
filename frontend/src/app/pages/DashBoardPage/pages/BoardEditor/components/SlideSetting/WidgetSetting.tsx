@@ -24,9 +24,10 @@ import { WidgetContext } from 'app/pages/DashBoardPage/components/WidgetProvider
 import { selectVizs } from 'app/pages/MainPage/pages/VizPage/slice/selectors';
 import { ChartStyleConfig } from 'app/types/ChartConfig';
 import { updateBy } from 'app/utils/mutation';
-import { FC, memo, useContext, useState } from 'react';
+import { FC, memo, useContext, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components/macro';
+import widgetManager from 'app/pages/DashBoardPage/components/WidgetManager';
 import { editBoardStackActions } from '../../slice';
 import { showRectAction } from '../../slice/actions/actions';
 import { selectSortAllWidgets } from '../../slice/selectors';
@@ -49,6 +50,38 @@ export const WidgetSetting: FC<{ boardId?: string }> = memo(({ boardId }) => {
   const { getDrillThroughSetting, getViewDetailSetting } = useChartInteractions(
     {},
   );
+
+  const hydratedConfigs = (useMemo(() => {
+    const configs = widget.config.customConfig.props || [];
+    const toolkit = widgetManager.toolkit(widget.config.originalType);
+
+    if (toolkit.getConfigTpl) {
+      const freshTpl = toolkit.getConfigTpl();
+      const mergeConfigs = (fresh, saved) => {
+        if (!saved) return fresh;
+        if (!fresh) return fresh;
+        return fresh.map(tplItem => {
+          const savedItem = saved.find(s => s.key === tplItem.key);
+          if (!savedItem) return tplItem;
+
+          const newItem = { ...tplItem, value: savedItem.value };
+          if (savedItem.hide !== undefined) newItem.hide = savedItem.hide;
+          if (savedItem.disabled !== undefined) newItem.disabled = savedItem.disabled;
+
+          if (tplItem.rows) {
+            if (savedItem.rows) {
+              newItem.rows = mergeConfigs(tplItem.rows, savedItem.rows);
+            } else {
+              newItem.rows = tplItem.rows;
+            }
+          }
+          return newItem;
+        });
+      };
+      return mergeConfigs(freshTpl, configs);
+    }
+    return configs;
+  }, [widget.config.customConfig.props, widget.config.originalType]) as ChartStyleConfig[]);
 
   const handleStyleConfigChange = (
     ancestors: number[],
@@ -130,7 +163,7 @@ export const WidgetSetting: FC<{ boardId?: string }> = memo(({ boardId }) => {
             />
             {showRect && <RectSet wid={widget.id} rect={widget.config.rect} />}
             <WidgetConfigPanel
-              configs={widget.config.customConfig.props || []}
+              configs={hydratedConfigs || []}
               onChange={handleStyleConfigChange}
             />
           </>

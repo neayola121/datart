@@ -76,6 +76,7 @@ export interface WidgetToolkit {
     widgetConf: WidgetConf,
     supportTrigger?: boolean,
   ) => WidgetActionListItem<widgetActionType>[];
+  getConfigTpl?: () => any;
   edit?: () => void;
   save?: () => void;
 

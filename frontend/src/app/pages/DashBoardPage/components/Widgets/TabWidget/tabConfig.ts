@@ -65,6 +65,8 @@ const tabsI18N = {
     borderColor: '边框颜色',
     borderStyle: '边框样式',
     borderWidth: '边框宽度',
+    dimensions: '尺寸',
+    margins: '外边距',
   },
   en: {
     tabGroup: 'Tab Config',
@@ -86,6 +88,8 @@ const tabsI18N = {
     borderColor: 'Border Color',
     borderStyle: 'Border Style',
     borderWidth: 'Border Width',
+    dimensions: 'Dimensions',
+    margins: 'Margins',
   },
 };
 
@@ -210,7 +214,7 @@ export const initTabsTpl = () => {
         comType: 'fontColor',
       },
       {
-        label: 'Dimensions',
+        label: 'tab.dimensions',
         key: 'dimensions',
         comType: 'group',
         options: { layout: 'horizontal', flatten: true, container: 'flat' },
@@ -236,7 +240,7 @@ export const initTabsTpl = () => {
         ],
       },
       {
-        label: 'Margins',
+        label: 'tab.margins',
         key: 'margins',
         comType: 'group',
         options: { flatten: true, container: 'flat' },
@@ -425,6 +429,15 @@ export const widgetToolkit: TabToolkit = {
       },
     ];
     return list;
+  },
+  getConfigTpl() {
+    return [
+      { ...initTabsTpl() },
+      { ...initTitleTpl() },
+      { ...initPaddingTpl() },
+      { ...initBackgroundTpl(WHITE) },
+      { ...initBorderTpl() },
+    ];
   },
   edit() { },
   save() { },
