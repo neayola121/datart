@@ -168,6 +168,10 @@ export const initTabsTpl = () => {
             { label: 'viz.common.enum.alignment.end', value: 'end' },
           ],
         },
+        watcher: {
+          deps: ['style'],
+          action: props => ({ hide: props.style === 'dropdown' }),
+        },
       },
       {
         label: 'tab.position',
@@ -183,6 +187,10 @@ export const initTabsTpl = () => {
             { label: 'viz.common.enum.position.left', value: 'left' },
             { label: 'viz.common.enum.position.right', value: 'right' },
           ],
+        },
+        watcher: {
+          deps: ['style'],
+          action: props => ({ hide: props.style === 'dropdown' }),
         },
       },
       {
