@@ -227,6 +227,10 @@ describe('Widget Config Migration Tests', () => {
               translateItemLabel: true,
             },
             value: 'start', // 修正点2：align 的 value 应该是 start
+            watcher: {
+              action: expect.any(Function),
+              deps: ['style'],
+            },
           },
           // 修正点3：新增 position 配置对象
           {
@@ -244,6 +248,10 @@ describe('Widget Config Migration Tests', () => {
               translateItemLabel: true,
             },
             value: 'top',
+            watcher: {
+              action: expect.any(Function),
+              deps: ['style'],
+            },
           },
           {
             comType: 'fontFamily',
