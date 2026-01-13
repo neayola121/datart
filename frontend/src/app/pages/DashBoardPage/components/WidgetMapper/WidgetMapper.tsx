@@ -26,6 +26,7 @@ import { IframeWidget } from '../Widgets/IframeWidget/IframeWidget';
 import { ImageWidget } from '../Widgets/ImageWidget/ImageWidget';
 import { QueryBtnWidget } from '../Widgets/QueryBtnWidget/QueryBtnWidget';
 import { ResetBtnWidget } from '../Widgets/ResetBtnWidget/ResetBtnWidget';
+import { JumpBtnWidget } from '../Widgets/JumpBtnWidget/JumpBtnWidget';
 import { RichTextWidget } from '../Widgets/RichTextWidget/RichTextWidget';
 import { TabWidget } from '../Widgets/TabWidget/TabWidget';
 import { TimerWidget } from '../Widgets/TimerWidget/TimerWidget';
@@ -74,6 +75,8 @@ export const WidgetMapper: React.FC<{
       return <QueryBtnWidget />;
     case ORIGINAL_TYPE_MAP.resetBtn:
       return <ResetBtnWidget />;
+    case ORIGINAL_TYPE_MAP.jumpBtn:
+      return <JumpBtnWidget />;
     // controller
     case ORIGINAL_TYPE_MAP.dropdownList:
     case ORIGINAL_TYPE_MAP.multiDropdownList:

@@ -87,6 +87,7 @@ export const ORIGINAL_TYPE_MAP = {
 
   queryBtn: 'queryBtn',
   resetBtn: 'resetBtn',
+  jumpBtn: 'jumpBtn',
 
   dropdownList: ControllerFacadeTypes.DropdownList,
   multiDropdownList: ControllerFacadeTypes.MultiDropdownList,

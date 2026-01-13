@@ -1050,6 +1050,7 @@
         "controller": "Controller",
         "queryBtn": "Query",
         "resetBtn": "Reset",
+        "jumpBtn": "Jump Button",
         "image": "Image",
         "richText": "Rich Text",
         "timer": "Timer",

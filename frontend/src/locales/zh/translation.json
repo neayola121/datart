@@ -1048,6 +1048,7 @@
         "controller": "控制器",
         "queryBtn": "查询",
         "resetBtn": "重置",
+        "jumpBtn": "跳转",
         "image": "图片",
         "richText": "富文本",
         "timer": "时间器",

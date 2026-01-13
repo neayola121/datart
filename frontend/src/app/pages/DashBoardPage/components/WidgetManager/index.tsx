@@ -37,6 +37,7 @@ import resetBtnProto from '../Widgets/ResetBtnWidget/resetBtnConfig';
 import richTextProto from '../Widgets/RichTextWidget/richTextConfig';
 import tabProto from '../Widgets/TabWidget/tabConfig';
 import timerProto from '../Widgets/TimerWidget/timerConfig';
+import jumpBtnProto from '../Widgets/JumpBtnWidget/jumpBtnConfig';
 import videoProto from '../Widgets/VideoWidget/videoConfig';
 import { widgetManagerInstance as widgetManager } from './WidgetManager';
 
@@ -51,6 +52,7 @@ const protoList: WidgetProto[] = [
   timerProto,
   queryBtnProto, //   button
   resetBtnProto,
+  jumpBtnProto,
   dropdownListProto, //controller
   multiDropdownListProto,
   checkboxGroupProto,

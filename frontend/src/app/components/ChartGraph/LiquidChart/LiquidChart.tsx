@@ -16,11 +16,12 @@
  * limitations under the License.
  */
 
+import { ChartSelectionManager } from 'app/models/ChartSelectionManager';
 import { ChartConfig } from 'app/types/ChartConfig';
-import { ChartDataSectionType } from 'app/constants';
+import { ChartDataSectionType, ChartInteractionEvent } from 'app/constants';
 import ChartDataSetDTO, { IChartDataSet } from 'app/types/ChartDataSet';
 import { BrokerContext, BrokerOption } from 'app/types/ChartLifecycleBroker';
-import { getStyles, toFormattedValue, transformToDataSet } from 'app/utils/chartHelper';
+import { getExtraSeriesRowData, getStyles, toFormattedValue, transformToDataSet } from 'app/utils/chartHelper';
 import { init } from 'echarts';
 import 'echarts-liquidfill';
 import Chart from '../../../models/Chart';
@@ -29,6 +30,7 @@ import Config from './config';
 class LiquidChart extends Chart {
     config = Config;
     chart: any = null;
+    selectionManager?: ChartSelectionManager;
 
     constructor() {
         super(
@@ -57,18 +59,65 @@ class LiquidChart extends Chart {
             context.document.getElementById(options.containerId)!,
             'default',
         );
+        this.selectionManager = new ChartSelectionManager(this.mouseEvents);
+        this.selectionManager.attachWindowListeners(context.window);
+        // this.selectionManager.attachEChartsListeners(this.chart);
+        this.chart.getZr().on('click', this.handleChartClick.bind(this));
+    }
+
+    handleChartClick(e) {
+        if (!e.target) {
+            return;
+        }
+        const clickCallback = this.mouseEvents?.find(v => v.name === 'click');
+        const firstSeries = this.chart?.getOption()?.series?.[0];
+
+        if (clickCallback && firstSeries && firstSeries?.data?.length > 0) {
+            const rawData = firstSeries.data[0];
+            const value = typeof rawData === 'object' ? rawData.value : rawData;
+
+            const data = {
+                ...(typeof rawData === 'object' ? rawData : {}),
+                rowData: this.dataset?.rows?.[0]?.map(cell => cell)
+            };
+
+            const clickParams = {
+                componentType: 'series',
+                componentSubType: 'liquidFill',
+                seriesType: 'liquidFill',
+                seriesIndex: 0,
+                dataIndex: 0,
+                name: this.dataset?.rows?.[0]?.[0],
+                data: data,
+                value: value,
+                selectedItems: [
+                    {
+                        index: '0,0',
+                        data: data
+                    }
+                ],
+                interactionType: ChartInteractionEvent.Select
+            };
+
+            clickCallback.callback(clickParams);
+        }
     }
 
     onUpdated(options: BrokerOption, context: BrokerContext) {
         if (!options.dataset || !options.dataset.columns || !options.config) {
             return;
         }
+        this.dataset = options.dataset;
+        this.config = options.config;
 
+        this.selectionManager?.updateSelectedItems(options?.selectedItems);
         const newOptions = this.getOptions(options.dataset, options.config);
         this.chart?.setOption(Object.assign({}, newOptions), true);
     }
 
     onUnMount(options: BrokerOption, context: BrokerContext) {
+        this.selectionManager?.removeWindowListeners(context.window);
+        this.selectionManager?.removeZRenderListeners(this.chart);
         this.chart?.dispose();
     }
 
@@ -158,7 +207,12 @@ class LiquidChart extends Chart {
         return [
             {
                 type: 'liquidFill',
-                data: [parsedValue],
+                data: [
+                    {
+                        value: parsedValue,
+                        ...getExtraSeriesRowData(chartDataSet?.[0]),
+                    },
+                ],
                 shape: shape || 'circle',
                 radius: radius || '80%',
                 color: [color],

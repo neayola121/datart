@@ -28,7 +28,7 @@ import { addControllerAction } from '../../../slice/actions/controlActions';
 import { selectHasQueryBtn, selectHasResetBtn } from '../../../slice/selectors';
 import { BoardToolBarContext } from '../context/BoardToolBarContext';
 
-export interface AddControlBtnProps {}
+export interface AddControlBtnProps { }
 export interface ButtonItemType<T> {
   name?: string;
   icon: any;
@@ -124,6 +124,11 @@ export const AddController: React.FC<AddControlBtnProps> = () => {
       icon: '',
       type: ORIGINAL_TYPE_MAP.resetBtn,
       disabled: hasResetBtn,
+    },
+    {
+      icon: '',
+      type: ORIGINAL_TYPE_MAP.jumpBtn,
+      disabled: false,
     },
   ];
   const renderTitle = (text: string) => {

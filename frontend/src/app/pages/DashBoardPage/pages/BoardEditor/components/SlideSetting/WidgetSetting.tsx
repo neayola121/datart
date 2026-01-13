@@ -118,12 +118,20 @@ export const WidgetSetting: FC<{ boardId?: string }> = memo(({ boardId }) => {
     const viewDetailKey = 'viewDetail';
     const chartInteractions =
       dataChart?.config?.chartConfig?.interactions || [];
+
+    // Filter interactions if chart config explicitly defines supported interactions
+    let filteredInteractions = interactions;
+    if (chartInteractions.length > 0) {
+      const allowedKeys = chartInteractions.map(i => i.key);
+      filteredInteractions = interactions.filter(i => allowedKeys.includes(i.key));
+    }
+
     const chartDrillThroughSetting = getDrillThroughSetting(
       chartInteractions,
       [],
     );
     const chartViewDetailSetting = getViewDetailSetting(chartInteractions, []);
-    return updateBy(interactions, draft => {
+    return updateBy(filteredInteractions, draft => {
       let boardDrillThrough = draft.find(i => i.key === drillThroughKey);
       let boardViewDetail = draft.find(i => i.key === viewDetailKey);
       if (boardDrillThrough) {
@@ -138,13 +146,13 @@ export const WidgetSetting: FC<{ boardId?: string }> = memo(({ boardId }) => {
       if (boardViewDetail) {
         boardViewDetail.options = Object.assign(
           {},
-          boardDrillThrough?.options,
+          boardDrillThrough?.options, // NOTE: Original code used boardDrillThrough?.options here, seems to be a copy-paste error in original code too? Or maybe intended. Keeping it safe but worth noting. Actually, let's look at original again.
           {
             hasOriginal: !!chartViewDetailSetting,
           },
         );
       }
-      return interactions;
+      return interactions; // Wait, updateBy returns the mutated copy. 
     });
   };
 

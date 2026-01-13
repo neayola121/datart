@@ -46,6 +46,14 @@ export const addControllerAction =
         dispatch(addWidgetsToEditBoard([resetWidget]));
 
         break;
+      case 'jumpBtn':
+        const jumpWidget = widgetManagerInstance.toolkit('jumpBtn').create({
+          boardType: opt.boardType,
+        });
+
+        dispatch(addWidgetsToEditBoard([jumpWidget]));
+
+        break;
       default:
         dispatch(
           editDashBoardInfoActions.changeControllerPanel({
